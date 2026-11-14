@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RJ Panel - Download & Admin Portal</title>
+    <style>
+        :root {
+            --primary-gold: #d4af37;
+            --primary-gold-hover: #b5952f;
+            --accent-red: #ef4444;
+            --bg-dark: #0a0a0a;
+            --card-bg: #141414;
+            --border-color: #2c2511;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 85px 16px 40px;
+            transition: background 0.3s ease;
+        }
+
+        /* Header & Navigation */
+        .header-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(18, 18, 18, 0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand img {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid var(--primary-gold);
+        }
+
+        .brand-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+            letter-spacing: 0.5px;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            background: #1f1f1f;
+            border: 1px solid #3a3a3a;
+            color: #fff;
+            padding: 7px 13px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .nav-btn.active, .nav-btn:hover {
+            background: var(--primary-gold);
+            color: #000;
+            border-color: var(--primary-gold);
+        }
+
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 540px;
+        }
+
+        /* Public Storefront / Download View */
+        .hero-banner {
+            background: rgba(20, 20, 20, 0.92);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .hero-banner h1 {
+            font-size: 1.35rem;
+            color: var(--primary-gold);
+            margin-bottom: 6px;
+        }
+
+        .hero-banner p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .search-box {
+            margin-top: 14px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 11px 14px;
+            background: #0d0d0d;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-gold);
+        }
+
+        .public-apk-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .public-apk-card {
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid #2e2612;
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .apk-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .apk-card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            word-break: break-word;
+        }
+
+        .apk-badge {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--primary-gold);
+            border: 1px solid var(--primary-gold);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .apk-card-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 14px;
+        }
+
+        .btn-download-big {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: #fff;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: opacity 0.2s;
+        }
+
+        .btn-download-big:hover {
+            opacity: 0.92;
+        }
+
+        .empty-state {
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px dashed #333;
+            border-radius: 14px;
+            padding: 32px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Admin Card Styles */
+        .card {
+            background: rgba(20, 20, 20, 0.96);
+            border: 1px solid var(--primary-gold);
+            border-radius: 14px;
+            padding: 24px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--primary-gold);
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 7px;
+        }
+
+        input[type="password"],
+        input[type="text"],
+        input[type="color"] {
+            width: 100%;
+            padding: 11px 14px;
+            background: #0d0d0d;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.98rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="password"]:focus,
+        input[type="text"]:focus {
+            border-color: var(--primary-gold);
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            background: #0d0d0d;
+            border: 1px dashed var(--primary-gold);
+            border-radius: 8px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-gold);
+            color: #000;
+            font-weight: bold;
+            font-size: 0.98rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--primary-gold-hover);
+        }
+
+        .btn-secondary {
+            background: #222;
+            color: var(--primary-gold);
+            border: 1px solid var(--primary-gold);
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #2e2e2e;
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid #ef4444;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* Custom Clean Alert Modal (No Error Code Shown) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: #fff;
+            color: #111;
+            width: 100%;
+            max-width: 350px;
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            animation: popIn 0.2s ease-out;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #111;
+        }
+
+        .modal-msg {
+            font-size: 0.95rem;
+            color: #333;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .modal-ok {
+            background: none;
+            border: none;
+            color: #2563eb;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            padding: 6px 12px;
+        }
+
+        /* Dashboard Sections */
+        .hidden {
+            display: none !important;
+        }
+
+        .section-divider {
+            border-top: 1px solid #2a2a2a;
+            margin: 22px 0;
+            padding-top: 18px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            color: var(--primary-gold);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .admin-apk-list {
+            margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .admin-apk-item {
+            background: #0d0d0d;
+            border: 1px solid #2b2b2b;
+            padding: 11px 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .apk-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            overflow: hidden;
+        }
+
+        .apk-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .apk-size {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .bg-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Header -->
+    <header class="header-bar">
+        <div class="brand">
+            <img id="siteLogo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23d4af37'/><text x='50' y='62' font-size='42' font-weight='bold' text-anchor='middle' fill='%23000'>RJ</text></svg>" alt="Web Logo">
+            <span class="brand-title" id="siteTitle">RJ PANEL</span>
+        </div>
+        <div class="nav-actions">
+            <button id="navHomeBtn" class="nav-btn active" onclick="switchView('home')">🏠 ডাউনলোড</button>
+            <button id="navAdminBtn" class="nav-btn" onclick="switchView('admin')">🛡️ এডমিন</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- ================= 1. PUBLIC DOWNLOAD PAGE (USERS) ================= -->
+        <div id="homeView">
+            <div class="hero-banner">
+                <h1>📲 RJ PANEL - APK ডাউনলোড সেন্টার</h1>
+                <p>নিচের তালিকা থেকে আপনার প্রয়োজনীয় APK ফাইলটি সরাসরি ডাউনলোড করুন</p>
+                <div class="search-box">
+                    <input type="text" id="searchApkInput" placeholder="প্যানেল বা APK এর নাম লিখে খুঁজুন..." onkeyup="renderApkLists()">
+                </div>
+            </div>
+
+            <div id="publicApkList" class="public-apk-grid"></div>
+        </div>
+
+        <!-- ================= 2. ADMIN LOGIN VIEW ================= -->
+        <div id="loginView" class="hidden">
+            <div class="card">
+                <div class="card-header">
+                    <span>🛡️ এডমিন / ওনার লগইন</span>
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">পাসওয়ার্ড</label>
+                    <input type="password" id="adminPassword" placeholder="পাসওয়ার্ড লিখুন" onkeypress="if(event.key==='Enter') checkLogin()">
+                </div>
+                <button class="btn" onclick="checkLogin()">লগইন করুন</button>
+            </div>
+        </div>
+
+        <!-- ================= 3. ADMIN CONTROL PANEL VIEW ================= -->
+        <div id="adminPanelView" class="hidden">
+            <div class="card">
+                <div class="card-header">
+                    <span>⚙️ এডমিন কন্ট্রোল প্যানেল</span>
+                    <button onclick="logout()" style="background:none;border:1px solid #444;color:#ccc;padding:5px 10px;border-radius:6px;font-size:0.8rem;cursor:pointer;">লগআউট</button>
+                </div>
+
+                <!-- A. Add APK From File or Direct Link -->
+                <div>
+                    <div class="section-title">📱 নতুন APK যুক্ত করুন (ওয়েবসাইটে দেখাবে)</div>
+                    <div class="form-group">
+                        <label for="apkTitleInput">প্যানেল / অ্যাপের নাম (ঐচ্ছিক)</label>
+                        <input type="text" id="apkTitleInput" placeholder="যেমন: PROXY ANDROID 5.2 VIP">
+                    </div>
+                    <div class="form-group">
+                        <label for="apkInput">ডিভাইস থেকে .apk ফাইল সিলেক্ট করুন</label>
+                        <input type="file" id="apkInput" accept=".apk,application/vnd.android.package-archive">
+                    </div>
+                    <button class="btn" onclick="addApkFromFile()">ফাইল থেকে APK যুক্ত করুন</button>
+
+                    <div class="form-group" style="margin-top: 14px;">
+                        <label for="apkDirectUrl">অথবা সরাসরি APK ডাউনলোড লিংক (URL) দিন (Vercel এ স্থায়ী রাখতে)</label>
+                        <div style="display:flex; gap:8px;">
+                            <input type="text" id="apkDirectUrl" placeholder="https://.../app.apk">
+                            <button class="btn" style="width:auto; padding:0 16px;" onclick="addApkFromUrl()">লিংক অ্যাড</button>
+                        </div>
+                    </div>
+
+                    <div class="admin-apk-list" id="adminApkList"></div>
+                </div>
+
+                <!-- B. Website Logo Change Options -->
+                <div class="section-divider">
+                    <div class="section-title">🖼️ ওয়েবসাইট লোগো পরিবর্তন</div>
+                    <div class="form-group">
+                        <label for="logoFileInput">নতুন লোগো আপলোড করুন (PNG/JPG/SVG)</label>
+                        <input type="file" id="logoFileInput" accept="image/*" onchange="changeLogoFromFile(event)">
+                    </div>
+                    <div class="form-group">
+                        <label for="logoUrlInput">অথবা লোগোর URL দিন</label>
+                        <div style="display:flex; gap:8px;">
+                            <input type="text" id="logoUrlInput" placeholder="https://example.com/logo.png">
+                            <button class="btn" style="width:auto; padding:0 16px;" onclick="changeLogoFromUrl()">সেট</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- C. Background Edit Options -->
+                <div class="section-divider">
+                    <div class="section-title">🎨 ব্যাকগ্রাউন্ড এডিট অপশন</div>
+                    <div class="bg-controls">
+                        <div class="form-group">
+                            <label for="bgColorPicker">ব্যাকগ্রাউন্ড কালার</label>
+                            <input type="color" id="bgColorPicker" value="#0a0a0a" onchange="changeBgColor(this.value)" style="height:44px; padding:4px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="bgImageInput">ব্যাকগ্রাউন্ড ছবি</label>
+                            <input type="file" id="bgImageInput" accept="image/*" onchange="changeBgImage(event)" style="padding:8px;">
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="resetBackground()">ডিফল্ট ব্যাকগ্রাউন্ড রিসেট</button>
+                </div>
+
+                <!-- D. Admin Password Change Options -->
+                <div class="section-divider">
+                    <div class="section-title">🔐 এডমিন পাসওয়ার্ড পরিবর্তন</div>
+                    <div class="form-group">
+                        <label for="currentPassInput">বর্তমান পাসওয়ার্ড</label>
+                        <input type="password" id="currentPassInput" placeholder="বর্তমান পাসওয়ার্ড দিন">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassInput">নতুন পাসওয়ার্ড</label>
+                        <input type="password" id="newPassInput" placeholder="নতুন পাসওয়ার্ড লিখুন">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassInput">নতুন পাসওয়ার্ড নিশ্চিত করুন</label>
+                        <input type="password" id="confirmPassInput" placeholder="আবার নতুন পাসওয়ার্ড লিখুন">
+                    </div>
+                    <button class="btn" onclick="changeAdminPassword()">পাসওয়ার্ড আপডেট করুন</button>
+                </div>
+
+                <!-- E. Code Download Option -->
+                <div class="section-divider">
+                    <div class="section-title">💾 সম্পূর্ণ ওয়েবসাইট কোড ডাউনলোড</div>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">
+                        আপনার যুক্ত করা APK লিংক, লোগো, ব্যাকগ্রাউন্ড ও নতুন পাসওয়ার্ডসহ সম্পূর্ণ ওয়েবসাইটের কোড ডাউনলোড করুন।
+                    </p>
+                    <button class="btn btn-secondary" onclick="downloadSourceCode()">⬇️ সম্পূর্ণ কোড ডাউনলোড করুন (index.html)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clean Alert Modal (No Error Code) -->
+    <div class="modal-overlay" id="alertModal">
+        <div class="modal-box">
+            <div class="modal-title" id="modalDomain">rj-panel</div>
+            <div class="modal-msg" id="modalMessage">ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন</div>
+            <div class="modal-actions">
+                <button class="modal-ok" onclick="closeModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ডিফল্ট পাসওয়ার্ড (প্রথমবার 1234, পরিবর্তনের পর নতুন পাসওয়ার্ড সেভ থাকবে)
+        let DEFAULT_PASS = "1234";
+        let isAdminLoggedIn = false;
+
+        // ওয়েবসাইটে সেভ থাকা APK তালিকা (কোড ডাউনলোড করলে এটিও সেভ হয়ে যাবে)
+        let SAVED_APKS = [];
+
+        function getActivePassword() {
+            return localStorage.getItem('rj_admin_password') || DEFAULT_PASS;
+        }
+
+        // কাস্টম ক্লিন অ্যালার্ট (কোনো এরর কোড দেখাবে না)
+        function showAlert(message) {
+            document.getElementById('modalDomain').innerText = window.location.hostname || 'rj-panel.vercel.app';
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('alertModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('alertModal').style.display = 'none';
+        }
+
+        // পেজ ভিউ পরিবর্তন (Home / Admin)
+        function switchView(view) {
+            const homeView = document.getElementById('homeView');
+            const loginView = document.getElementById('loginView');
+            const adminPanelView = document.getElementById('adminPanelView');
+            const navHomeBtn = document.getElementById('navHomeBtn');
+            const navAdminBtn = document.getElementById('navAdminBtn');
+
+            homeView.classList.add('hidden');
+            loginView.classList.add('hidden');
+            adminPanelView.classList.add('hidden');
+            navHomeBtn.classList.remove('active');
+            navAdminBtn.classList.remove('active');
+
+            if (view === 'home') {
+                homeView.classList.remove('hidden');
+                navHomeBtn.classList.add('active');
+                renderApkLists();
+            } else if (view === 'admin') {
+                navAdminBtn.classList.add('active');
+                if (isAdminLoggedIn) {
+                    adminPanelView.classList.remove('hidden');
+                } else {
+                    loginView.classList.remove('hidden');
+                }
+            }
+        }
+
+        // পাসওয়ার্ড চেক (ভুল হলে কোনো কোড দেখাবে না)
+        function checkLogin() {
+            const inputPass = document.getElementById('adminPassword').value.trim();
+            if (inputPass === getActivePassword()) {
+                isAdminLoggedIn = true;
+                document.getElementById('adminPassword').value = "";
+                switchView('admin');
+            } else {
+                // শুধুমাত্র পরিষ্কার মেসেজ দেখাবে, কোনো এরর কোড থাকবে না
+                showAlert("ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন");
+                document.getElementById('adminPassword').value = "";
+            }
+        }
+
+        function logout() {
+            isAdminLoggedIn = false;
+            switchView('home');
+        }
+
+        // এডমিন পাসওয়ার্ড পরিবর্তন
+        function changeAdminPassword() {
+            const currentPass = document.getElementById('currentPassInput').value.trim();
+            const newPass = document.getElementById('newPassInput').value.trim();
+            const confirmPass = document.getElementById('confirmPassInput').value.trim();
+
+            if (!currentPass || !newPass || !confirmPass) {
+                showAlert("সবগুলো ঘর পূরণ করুন!");
+                return;
+            }
+            if (currentPass !== getActivePassword()) {
+                showAlert("বর্তমান পাসওয়ার্ড সঠিক নয়!");
+                return;
+            }
+            if (newPass.length < 4) {
+                showAlert("নতুন পাসওয়ার্ড কমপক্ষে ৪ অক্ষরের দিন!");
+                return;
+            }
+            if (newPass !== confirmPass) {
+                showAlert("নতুন পাসওয়ার্ড দুটি মিলছে না!");
+                return;
+            }
+
+            localStorage.setItem('rj_admin_password', newPass);
+            DEFAULT_PASS = newPass;
+
+            document.getElementById('currentPassInput').value = "";
+            document.getElementById('newPassInput').value = "";
+            document.getElementById('confirmPassInput').value = "";
+            showAlert("এডমিন পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে!");
+        }
+
+        // ফাইল থেকে APK অ্যাড করা
+        function addApkFromFile() {
+            const fileInput = document.getElementById('apkInput');
+            const customTitle = document.getElementById('apkTitleInput').value.trim();
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showAlert("অনুগ্রহ করে একটি APK ফাইল সিলেক্ট করুন!");
+                return;
+            }
+            if (!file.name.toLowerCase().endsWith('.apk')) {
+                showAlert("শুধুমাত্র .apk ফাইল আপলোড করা যাবে!");
+                return;
+            }
+
+            const fileURL = URL.createObjectURL(file);
+            const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2) + " MB";
+
+            const newApk = {
+                id: Date.now(),
+                title: customTitle || file.name.replace(/\.apk$/i, ''),
+                fileName: file.name,
+                size: fileSizeMB,
+                url: fileURL,
+                isLocalFile: true
+            };
+
+            SAVED_APKS.unshift(newApk);
+            fileInput.value = "";
+            document.getElementById('apkTitleInput').value = "";
+            renderApkLists();
+            showAlert("APK ওয়েবসাইটে যুক্ত হয়েছে! এখন ডাউনলোড পেজে দেখা যাবে।");
+        }
+
+        // সরাসরি লিংক (URL) থেকে APK অ্যাড করা
+        function addApkFromUrl() {
+            const urlInput = document.getElementById('apkDirectUrl');
+            const customTitle = document.getElementById('apkTitleInput').value.trim();
+            const url = urlInput.value.trim();
+
+            if (!url) {
+                showAlert("সঠিক APK ডাউনলোড লিংক দিন!");
+                return;
+            }
+
+            const extractedName = url.split('/').pop().split('?')[0] || "app-release.apk";
+            const newApk = {
+                id: Date.now(),
+                title: customTitle || extractedName.replace(/\.apk$/i, ''),
+                fileName: extractedName.endsWith('.apk') ? extractedName : extractedName + '.apk',
+                size: "Direct Link",
+                url: url,
+                isLocalFile: false
+            };
+
+            SAVED_APKS.unshift(newApk);
+            savePersistentApks();
+            urlInput.value = "";
+            document.getElementById('apkTitleInput').value = "";
+            renderApkLists();
+            showAlert("APK লিংক ওয়েবসাইটে যুক্ত হয়েছে!");
+        }
+
+        // APK ডিলিট করা
+        function deleteApk(id) {
+            SAVED_APKS = SAVED_APKS.filter(item => item.id !== id);
+            savePersistentApks();
+            renderApkLists();
+        }
+
+        function savePersistentApks() {
+            const persistent = SAVED_APKS.filter(item => !item.isLocalFile);
+            localStorage.setItem('rj_saved_apks', JSON.stringify(persistent));
+        }
+
+        // পাবলিক ডাউনলোড পেজ এবং এডমিন লিস্ট রেন্ডার করা
+        function renderApkLists() {
+            const publicContainer = document.getElementById('publicApkList');
+            const adminContainer = document.getElementById('adminApkList');
+            const searchQuery = (document.getElementById('searchApkInput')?.value || "").toLowerCase();
+
+            const filteredApks = SAVED_APKS.filter(apk =>
+                apk.title.toLowerCase().includes(searchQuery) ||
+                apk.fileName.toLowerCase().includes(searchQuery)
+            );
+
+            // Public Download View
+            if (filteredApks.length === 0) {
+                publicContainer.innerHTML = `
+                    <div class="empty-state">
+                        এখনও কোনো APK ফাইল যুক্ত করা হয়নি।<br>
+                        <span style="font-size:0.82rem; color:#777;">(এডমিন প্যানেল থেকে APK যুক্ত করলে এখানে দেখাবে)</span>
+                    </div>
+                `;
+            } else {
+                publicContainer.innerHTML = filteredApks.map(apk => `
+                    <div class="public-apk-card">
+                        <div class="apk-card-top">
+                            <div class="apk-card-title">📦 ${apk.title}</div>
+                            <span class="apk-badge">APK</span>
+                        </div>
+                        <div class="apk-card-meta">
+                            <span>ফাইল: ${apk.fileName}</span>
+                            <span>সাইজ: ${apk.size}</span>
+                        </div>
+                        <a href="${apk.url}" download="${apk.fileName}" class="btn-download-big">⬇️ Download APK</a>
+                    </div>
+                `).join('');
+            }
+
+            // Admin List View
+            if (SAVED_APKS.length === 0) {
+                adminContainer.innerHTML = "";
+            } else {
+                adminContainer.innerHTML = SAVED_APKS.map(apk => `
+                    <div class="admin-apk-item">
+                        <div class="apk-info">
+                            <span class="apk-name">${apk.title}</span>
+                            <span class="apk-size">${apk.fileName} (${apk.size})</span>
+                        </div>
+                        <button class="btn-danger" onclick="deleteApk(${apk.id})">মুছুন</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // ওয়েবসাইট লোগো পরিবর্তন
+        function changeLogoFromFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('siteLogo').src = e.target.result;
+                localStorage.setItem('rj_custom_logo', e.target.result);
+                showAlert("ওয়েবসাইট লোগো পরিবর্তন করা হয়েছে!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function changeLogoFromUrl() {
+            const url = document.getElementById('logoUrlInput').value.trim();
+            if (!url) {
+                showAlert("সঠিক লোগো লিংক (URL) দিন!");
+                return;
+            }
+            document.getElementById('siteLogo').src = url;
+            localStorage.setItem('rj_custom_logo', url);
+            showAlert("ওয়েবসাইট লোগো আপডেট হয়েছে!");
+        }
+
+        // ব্যাকগ্রাউন্ড পরিবর্তন
+        function changeBgColor(color) {
+            document.body.style.backgroundImage = 'none';
+            document.body.style.backgroundColor = color;
+            localStorage.setItem('rj_bg_color', color);
+            localStorage.removeItem('rj_bg_image');
+        }
+
+        function changeBgImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.body.style.backgroundImage = `url('${e.target.result}')`;
+                localStorage.setItem('rj_bg_image', e.target.result);
+                showAlert("ব্যাকগ্রাউন্ড ছবি পরিবর্তন করা হয়েছে!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetBackground() {
+            document.body.style.backgroundImage = 'none';
+            document.body.style.backgroundColor = '#0a0a0a';
+            document.getElementById('bgColorPicker').value = '#0a0a0a';
+            localStorage.removeItem('rj_bg_color');
+            localStorage.removeItem('rj_bg_image');
+            showAlert("ব্যাকগ্রাউন্ড ডিফল্ট অবস্থায় ফিরে এসেছে!");
+        }
+
+        // সম্পূর্ণ ওয়েবসাইট কোড ডাউনলোড (index.html)
+        function downloadSourceCode() {
+            const activePass = getActivePassword();
+            const persistentApks = SAVED_APKS.filter(item => !item.isLocalFile);
+
+            // ডাউনলোড ফাইলে ডিফল্ট হোম ভিউ দেখানোর জন্য সাময়িকভাবে ক্লোন করা
+            const docClone = document.documentElement.cloneNode(true);
+            docClone.querySelector('#homeView').classList.remove('hidden');
+            docClone.querySelector('#loginView').classList.add('hidden');
+            docClone.querySelector('#adminPanelView').classList.add('hidden');
+            docClone.querySelector('#navHomeBtn').classList.add('active');
+            docClone.querySelector('#navAdminBtn').classList.remove('active');
+
+            let currentHTML = "<!DOCTYPE html>\n" + docClone.outerHTML;
+            currentHTML = currentHTML.replace(/let DEFAULT_PASS = ".*?";/, `let DEFAULT_PASS = "${activePass}";`);
+            currentHTML = currentHTML.replace(/let SAVED_APKS = \[.*?\];/, `let SAVED_APKS = ${JSON.stringify(persistentApks)};`);
+
+            const blob = new Blob([currentHTML], { type: "text/html;charset=utf-8" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "index.html";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // পেজ লোড হলে সেভ করা ডেটা লোড করা
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLogo = localStorage.getItem('rj_custom_logo');
+            const savedBgColor = localStorage.getItem('rj_bg_color');
+            const savedBgImage = localStorage.getItem('rj_bg_image');
+            const storedApks = localStorage.getItem('rj_saved_apks');
+
+            if (savedLogo) document.getElementById('siteLogo').src = savedLogo;
+            if (savedBgImage) {
+                document.body.style.backgroundImage = `url('${savedBgImage}')`;
+            } else if (savedBgColor) {
+                document.body.style.backgroundColor = savedBgColor;
+                document.getElementById('bgColorPicker').value = savedBgColor;
+            }
+
+            if (storedApks) {
+                try {
+                    const parsed = JSON.parse(storedApks);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        SAVED_APKS = parsed;
+                    }
+                } catch (e) {}
+            }
+
+            renderApkLists();
+        });
+    </script>
+</body>
+</html>
